@@ -8,7 +8,7 @@ MessagePack but the implementation completely separate.
 
 ## Install
 
-    go get gopkg.in/packstream.v1
+    go get github.com/go-packstream
 
 ## Docs
 
