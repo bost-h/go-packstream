@@ -6,6 +6,10 @@ MessagePack but the implementation completely separate.
 Install with:
 
 	go get gopkg.in/packstream.v1
+
+Then import with:
+
+	import "gopkg.in/packstream.v1"
 */
 package packstream
 
