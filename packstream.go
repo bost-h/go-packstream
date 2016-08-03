@@ -2,6 +2,14 @@
 Package packstream contains a full implementation of PackStream: the serialisation
 format built specifically for Neo4j. The PackStream design is based heavily on
 MessagePack but the implementation completely separate.
+
+Install with:
+
+	go get gopkg.in/packstream.v1
+
+Then import with:
+
+	import "gopkg.in/packstream.v1"
 */
 package packstream
 
