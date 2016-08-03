@@ -6,6 +6,7 @@ import (
 	"io"
 	"math"
 	"reflect"
+	"time"
 )
 
 // Encoder can write go values to an output stream, encoding them in packstream format.
@@ -36,6 +37,9 @@ Marshal can encode the following go values:
 	[]interface{}
 	map[string]interface{}
 	Structure
+	time.Time
+
+To marshal a time.Time, it stores the int64 returned by time.UnixNano(). If the time is a zero value, it stores 0.
 */
 func Marshal(v interface{}) (p []byte, err error) {
 	var b bytes.Buffer
@@ -108,8 +112,11 @@ func (e *Encoder) encode(rv reflect.Value) (err error) {
 			err = e.encodeMap(rv)
 		}
 	case reflect.Struct:
-		if rv.Type() == structType {
+		typ := rv.Type()
+		if typ == structType {
 			err = e.encodeStruct(rv)
+		} else if typ.PkgPath() == "time" && typ.Name() == "Time" {
+			err = e.encodeTime(rv)
 		} else {
 			err = ErrMarshalTypeError
 		}
@@ -389,4 +396,12 @@ func (e *Encoder) encodeMarshaler(v Marshaler) (err error) {
 		return nil
 	}
 	return
+}
+
+func (e *Encoder) encodeTime(rv reflect.Value) error {
+	tm := rv.Interface().(time.Time)
+	if tm.IsZero() {
+		return e.Encode(0)
+	}
+	return e.Encode(tm.UnixNano())
 }
